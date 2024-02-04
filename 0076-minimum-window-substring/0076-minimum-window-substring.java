@@ -1,34 +1,25 @@
 class Solution {
     public String minWindow(String s, String t) {
-        int[] count1 = new int[256];
-        int[] count2 = new int[256];
-        int n = s.length();
+        int[] count = new int[256];
+        int n = s.length(), diff = 0;
         for(int i = 0; i < t.length(); i++) {
-            count1[t.charAt(i)]++;
+            diff += (count[t.charAt(i)] == 0) ? 1 : 0;
+            count[t.charAt(i)]++;
         }
         
-        int o = 0;
-        for(int i = 0; i < 256; i++) {
-            if(count2[i] >= count1[i]) {
-                o++;
-            }
-        }
         
         int L = -1, len = n * 2;
         for(int i = 0, j = 0; i < n; i++) {
             int c = s.charAt(i);
-            count2[c]++;
-            if(count2[c] - count1[c] == 0) {
-                o++;
-            }
-
-            while(o == 256) {
+            count[c]--;
+            diff -= (count[c] == 0) ? 1 : 0;
+            while(diff == 0) {
                 if(i - j + 1 < len) {
                     len = i - j + 1;
                     L = j;
                 }
-                if(count1[s.charAt(j)] == count2[s.charAt(j)]) o--;
-                count2[s.charAt(j)]--;
+                count[s.charAt(j)]++;
+                diff += (count[s.charAt(j)] == 1) ? 1 : 0;
                 j++;
             }
         }
