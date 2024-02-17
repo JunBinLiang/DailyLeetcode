@@ -7,7 +7,6 @@ class Solution {
         int ans = 0;
         for(int i = 1; i < heights.length; i++) {
             if(heights[i] > heights[i - 1]) {
-                //System.out.println("before " + i + "  " + pq + "  " + bricks + "  " + ladders);
                 int diff = heights[i] - heights[i - 1];
                 if(bricks >= diff) {
                     pq.add(diff);
@@ -26,7 +25,6 @@ class Solution {
                         pq.add(diff);
                         bricks -= diff;
                     }
-                    //System.out.println("after " + i + " " + pq + "  " + bricks + "  " + ladders);
                 } else {
                     break;
                 }
