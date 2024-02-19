@@ -5,30 +5,31 @@ class Solution {
         });
         
         int[] count = new int[n];
-        long[] rooms = new long[n]; //time when it gets free
-        Arrays.fill(rooms, -1);
-        
-        for(int i = 0; i < meetings.length; i++) {
-            int s = meetings[i][0], e = meetings[i][1]; 
-            long mn = Long.MAX_VALUE; 
-            int index = -1;
-            boolean assign = false;
-            for(int j = 0; j < n; j++) {
-                if(rooms[j] < mn) {
-                    mn = rooms[j];
-                    index = j;
-                }
-                if(rooms[j] <= s) {
-                    rooms[j] = e;
-                    count[j]++;
-                    assign = true;
-                    break;
-                }
+        PriorityQueue<long[]> running = new PriorityQueue<>((x, y) -> {
+            if(x[1] == y[1]) {
+                return Long.compare(x[0], y[0]);
             }
-            
-            if(!assign) {
-                count[index]++;
-                rooms[index] = mn + (e - s);
+            return Long.compare(x[1], y[1]);
+        });
+        PriorityQueue<long[]> free = new PriorityQueue<>((x, y) -> {
+            return Long.compare(x[0], y[0]);
+        }); 
+        for(int i = 0; i < n; i++) free.add(new long[]{i, -1});
+        
+        for(int[] meeting : meetings) {
+            int s = meeting[0], e = meeting[1];
+            while(running.size() > 0 && running.peek()[1] <= s) {
+                free.add(running.poll());
+            }
+            if(free.size() > 0) {
+                free.peek()[1] = e;
+                count[(int)(free.peek()[0])]++;
+                running.add(free.poll());
+            } else {
+                long[] p = running.poll();
+                p[1] += (e - s);
+                count[(int)(p[0])]++;
+                running.add(p);
             }
         }
         
