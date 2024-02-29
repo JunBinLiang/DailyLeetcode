@@ -16,40 +16,20 @@
 class Solution {
     public boolean isEvenOddTree(TreeNode root) {
         Queue<TreeNode> q = new LinkedList<>();
-        int level = 0;
         q.add(root);
+        int odd = 1;
         while(q.size() > 0) {
             int sz = q.size();
-            List<Integer> list = new ArrayList<>();
+            int prev = 0;
             for(int i = 0; i < sz; i++) {
                 TreeNode u = q.poll();
-                list.add(u.val);
                 if(u.left != null) q.add(u.left);
                 if(u.right != null) q.add(u.right);
+                if((prev != 0 && u.val * odd <= prev * odd) || (u.val % 2 != (odd < 0 ? odd + 1 : odd))) return false; 
+                prev = u.val;
             }
-            if(level % 2 == 1) Collections.reverse(list);
-            level++;
-            if(!check(list, level % 2)) {
-                return false;
-            }
+            odd *= -1;
         }
-        return true;
-    }
-    
-    public boolean check(List<Integer> list, int v) {
-        for(int i = 1; i < list.size(); i++) {
-            int x = list.get(i), y = list.get(i - 1);
-            if(x <= y) {
-                return false;
-            }
-        }
-        
-        for(int x : list) {
-            if((x % 2) != v) {
-                return false;
-            }
-        }
-        
         return true;
     }
 }
